@@ -2,8 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { formSchema } from "@/lib/validation";
-import { FormData } from "@/types/form";
+import { formSchema, FormData } from '@/lib/validation';
 import { useRouter, useSearchParams } from "next/navigation";
 import { generatePDF } from "@/lib/pdfUtils";
 import { useEffect } from "react";
@@ -47,7 +46,15 @@ export default function FormPage() {
     const isValid = await trigger();
     if (!isValid) return;
     const values = getValues();
-    router.push(`/preview?${new URLSearchParams(values as any).toString()}`);
+    const queryParams = Object.entries(values)
+      .filter(([_, value]) => value !== undefined)
+      .reduce((acc, [key, value]) => {
+        acc[key] = String(value);
+        return acc;
+      }, {} as Record<string, string>);
+
+    router.push(`/preview?${new URLSearchParams(queryParams).toString()}`);
+
   };
 
   const onDownloadPDF = async () => {
