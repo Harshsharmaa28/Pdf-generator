@@ -22,6 +22,7 @@ export default function FormPage() {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
     trigger,
     getValues,
@@ -64,6 +65,20 @@ export default function FormPage() {
     generatePDF(values);
   };
 
+  const handleGetrandomUser = async () =>{
+
+    const data = await fetch("https://randomuser.me/api/");
+    const response = await data.json();
+    const firstName = response.results[0].name.first;
+    const lastName = response.results[0].name.last;
+    const newName = firstName + lastName;
+    const newEmail = response.results[0].email;
+    const newPhone = response.results[0].phone;
+    setValue("name",newName);
+    setValue("email",newEmail);
+    setValue("phone",newPhone);
+  }
+
   const Field = ({
     icon,
     label,
@@ -97,7 +112,7 @@ export default function FormPage() {
   );
 
   return (
-    <div className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-xl">
+    <div className="max-w-2xl flex flex-col gap-5 mx-auto mt-10 p-6 bg-white rounded-xl">
       <h1 className="text-2xl font-bold text-center mb-6">Add Your details</h1>
       <form className="space-y-4">
         <Field
@@ -150,6 +165,14 @@ export default function FormPage() {
           </button>
         </div>
       </form>
+      <button
+            type="button"
+            onClick={handleGetrandomUser}
+            className="flex items-center w-full cursor-pointer justify-center gap-2 bg-gradient-to-r from-green-600 to-green-700 text-white font-semibold p-1 sm:py-2 sm:px-12 rounded-md shadow hover:opacity-90"
+          >
+            <FaDownload />
+            Random User
+      </button>
     </div>
   );
 }
